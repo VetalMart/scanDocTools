@@ -1,6 +1,12 @@
 import os
 import shutil
 import pickle
+import csv
+import logging
+
+logging.basicConfig(filename='programInfo.txt', level=logging.DEBUG, 
+    format='%(asctime)s - %(levelname)s - %(messages)s')
+
 
 """
 #рабочие адреса папок 
@@ -53,9 +59,20 @@ def getInformationFromPickleFile(source):
         data = pickle.load(handle)
     return data
 
+def getInfoFromCsvFile(source):
+    """
+    функция которая импортирует данные с csv файла
+    возвращает список с данными
+    """
+    with open(source, newline='') as csvfile:
+        data = csv.reader(csvfile)
+        return list(data)
+
 
 def nameClean(source):
     """
+    !!!!!!!!!!!!for PICKLE files !!!!!!!!!!!!!!!!!!
+    
     функция для создания чистых имен
     на входе список source с информацией
     возвращает список с именами для папок
@@ -63,6 +80,16 @@ def nameClean(source):
     fileNamesClean = ['{0} {1} {2}'.format(i[2], i[3], i[4]) for i in source]
     return fileNamesClean
 
+def nameCleanCSV(source):
+    """
+    !!!!!!!!!!!!for CSV files!!!!!!!!!!!!!!!!!!!!!!
+
+    функция для создания чистых имен
+    на входе список source с информацией
+    возвращает список с именами для папок
+    """
+    fileNamesClean = ['{0} {1}'.format(i[0], i[1]) for i in source]
+    return fileNamesClean
 
 def namePdf(source):
     """
@@ -142,11 +169,11 @@ def replaceByRegion(imd, dD):
     заходим в нее, если нет - создаем;  
     4. если нашлось и совпали - копируем только файл с исходной
     5. если не нашлось в сетевой папке совпадения - копируем всю папку
-    """
+    
     lFolders = []
     lFiles = []
     lPass = []
-
+    """
     def checkRegion(iter1, iter2, str1, str2, name, folderD, folderS):
         """
         iter1-имя папка объектa в промежуточной папки
@@ -172,8 +199,10 @@ def replaceByRegion(imd, dD):
                         folderD, iter2, iter1, name)):
                     # если да - сматываем удочки
 
-                    lPass.append('{0}\\{1}\\{2}\\{3}'.format(
-                        folderD, iter2, iter1, name))
+                    logging.info('{0}\\{1}\\{2}\\{3} - этот файл \
+                        уже существовал;'.format(folderD, iter2, iter1, name))
+                    #lPass.append('{0}\\{1}\\{2}\\{3}'.format(
+                    #    folderD, iter2, iter1, name))
                     pass
                 else:
                     # если нет - копируем файл в папку
@@ -181,9 +210,11 @@ def replaceByRegion(imd, dD):
                                 format(folderS, iter1, name),
                                 '{0}\\{1}\\{2}\\{3}'.format(
                                     folderD, iter2, iter1, name))
-
-                    lFiles.append('{0}\\{1}\\{2}\\{3}'.format(
+                    logging.info('папка - {0}\\{1}\\{2} существовала, \
+                        файл - {3} добавили;'.format(
                         folderD, iter2, iter1, name))
+                    #lFiles.append('{0}\\{1}\\{2}\\{3}'.format(
+                    #    folderD, iter2, iter1, name))
             else:
                 os.chdir('{0}\\{1}'.format(folderD, iter2))
                 # если полного совпадения имени папки нет - делаем
@@ -196,17 +227,20 @@ def replaceByRegion(imd, dD):
                                     format(folderS, iter1, name),
                                     '{0}\\{1}\\{2}\\{3}'.format(
                                         folderD, iter2, k, name))
-
-                        lFiles.append('{0}\\{1}\\{2}\\{3}'.format(
+                        logging.info('папка - {0}\\{1}\\{2} совпала по номеру \
+                            с программы заявка, файл - {3} добавили;'.format(
                             folderD, iter2, k, name))
+                        #lFiles.append('{0}\\{1}\\{2}\\{3}'.format(
+                        #    folderD, iter2, k, name))
                         break
                 else:
                     # если нет - копируем в корневую папку все дерево
                     shutil.copytree('{0}\\{1}'.format(folderS, iter1),
                                     '{0}'.format(iter1))
-
-                    lFolders.append('{0}\\{1}\\{2}\\{3}'.format(
-                        folderD, iter2, iter1, name))
+                    logging.info('создали каталок с файлом -{0}\\{1}\\{2}\
+                        \\{3}'.format(folderD, iter2, iter1, name))
+                    #lFolders.append('{0}\\{1}\\{2}\\{3}'.format(
+                    #    folderD, iter2, iter1, name))
 
     # проходим по папке с переименоваными папками
     for i in os.listdir(imd):
@@ -223,7 +257,7 @@ def replaceByRegion(imd, dD):
                 checkRegion(i, j, '06.', '05_', akt, dD, imd)
                 checkRegion(i, j, '23.', '07_', akt, dD, imd)
                 checkRegion(i, j, '11.', '18_', akt, dD, imd)
-
+    """
     # создание лог файла
     print('\nсписок папок которые были созданы:\n ')
     for i in lFolders:
@@ -235,8 +269,8 @@ def replaceByRegion(imd, dD):
 
     os.chdir(imd)
     print('''\n\nна рабочем столе у вас создаться файл с именем
-		listAdded.txt - там список файлов и папок которые
-		были добавлени в сетевую папку''')
+        listAdded.txt - там список файлов и папок которые
+        были добавлени в сетевую папку''')
     with open('c:\\users\\{0}\\desktop\\listAdded.txt'.format(
             os.getlogin()), 'w', encoding='utf-8') as file:
         print('список папок которые были созданы:\n ',
@@ -248,3 +282,4 @@ def replaceByRegion(imd, dD):
         print('\nсписок пропущених файлов:\n ',
               file=file, sep='\n')
         print(*enumerate(lPass, start=1), file=file, sep='\n')
+    """
