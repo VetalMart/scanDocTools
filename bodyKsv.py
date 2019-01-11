@@ -59,14 +59,14 @@ def getInformationFromPickleFile(source):
         data = pickle.load(handle)
     return data
 
-def getInfoFromCsvFile(source):
+def getInfoFromTxtFile(source):
     """
-    функция которая импортирует данные с csv файла
+    функция которая импортирует данные с txt файла
     возвращает список с данными
     """
-    with open(source, newline='') as csvfile:
-        data = csv.reader(csvfile)
-        return list(data)
+    with open(source, 'r') as txtfile:
+        data = [' '.join(i.rstrip('\n').split(' ')[1:]) for i in txtfile]
+        return data
 
 
 def nameClean(source):

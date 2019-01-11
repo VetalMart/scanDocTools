@@ -10,7 +10,7 @@ from bodyKsv import *
 """
 #remoteFolder = '\\skv-fs02\kv\Проект\'
 remoteFolder = 'rem'
-csvFile = 'scan.csv'
+txtFile = 'scan.txt'
 #scanFolder = '{0}\\{1}'.format(os.getcwd(), 'scan')
 scanFolder = 'scan'
 #создаем промежуточную папку
@@ -18,10 +18,10 @@ scanFolder = 'scan'
 imdFolder = 'imd'
 
 #получили список номеров и имен
-listWithInfo = getInfoFromCsvFile(csvFile)
+listWithInfo = getInfoFromTxtFile(txtFile)
 #создали нужный нам список чистых имен
-nClCSV = nameCleanCSV(listWithInfo)
+#nClCSV = nameCleanCSV(listWithInfo)
 #создаем промежуточную папку с данными
-createIntermidiateDir(imdFolder, scanFolder, nClCSV)
+createIntermidiateDir(imdFolder, scanFolder, listWithInfo)
 #раскладываем по полкам в удаленной папке
 replaceByRegion(imdFolder, remoteFolder)
