@@ -20,7 +20,6 @@ imdFolder = 'imd'
 #получили список номеров и имен
 listWithInfo = getInfoFromTxtFile(txtFile)
 #создали нужный нам список чистых имен
-#nClCSV = nameCleanCSV(listWithInfo)
 #создаем промежуточную папку с данными
 createIntermidiateDir(imdFolder, scanFolder, listWithInfo)
 #раскладываем по полкам в удаленной папке
