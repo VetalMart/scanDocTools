@@ -4,8 +4,8 @@ import pickle
 import csv
 import logging
 
-logging.basicConfig(filename='programInfo.txt', level=logging.DEBUG, 
-    format='%(asctime)s - %(levelname)s - %(messages)s')
+#logging.basicConfig(filename='programInfo.txt', level=logging.DEBUG, 
+ #   format='%(asctime)s - %(levelname)s - %(message)s')
 
 
 """
@@ -18,111 +18,14 @@ dirDestination = input("корневая папка, с районами> ")
 # стандратное имя файла
 akt = 'акт прийняття внурішніх і зовнішніх мереж.pdf'
 
-# задаем адрес папки окружения
-# os.chdir('c:\\users\\vitalii.martynenko\\python\\')
-# os.chdir(dirWithPickleFile)
-
-
-def packInPickle():
-    """
-    функция для создания списка который будет упакован в pickle
-    возвращает список имен
-    """
-    totalZayavkaList = []
-    while True:
-        a = input("номер/журнал заявка/программа заявка/ФИО> ").split(' ')
-        totalZayavkaList.append(a)
-        if a == ['1']:
-            break
-
-    totalZayavkaList.pop()
-    return totalZayavkaList
-
-
-def createFilePickle(source, name):
-    """
-    функция для упакования имен в файл pickle
-    на входе список source с информацией для упаковки
-    name - имя файла pickle
-    """
-    with open('{0}.pickle'.format(name), 'wb') as handle:
-        pickle.dump(source, handle, protocol=pickle.HIGHEST_PROTOCOL)
-
-
-def getInformationFromPickleFile(source):
-    """
-    функция для чтения файла pickle
-    возвращает список с информацией
-    source - файл pickle с информацией
-    """
-    with open(source, 'rb') as handle:
-        data = pickle.load(handle)
-    return data
-
 def getInfoFromTxtFile(source):
     """
     функция которая импортирует данные с txt файла
-    возвращает список с данными
+    возвращает список с данными c чистыми имиенами
     """
     with open(source, 'r') as txtfile:
         data = [' '.join(i.rstrip('\n').split(' ')[1:]) for i in txtfile]
         return data
-
-
-def nameClean(source):
-    """
-    !!!!!!!!!!!!for PICKLE files !!!!!!!!!!!!!!!!!!
-    
-    функция для создания чистых имен
-    на входе список source с информацией
-    возвращает список с именами для папок
-    """
-    fileNamesClean = ['{0} {1} {2}'.format(i[2], i[3], i[4]) for i in source]
-    return fileNamesClean
-
-def nameCleanCSV(source):
-    """
-    !!!!!!!!!!!!for CSV files!!!!!!!!!!!!!!!!!!!!!!
-
-    функция для создания чистых имен
-    на входе список source с информацией
-    возвращает список с именами для папок
-    """
-    fileNamesClean = ['{0} {1}'.format(i[0], i[1]) for i in source]
-    return fileNamesClean
-
-def namePdf(source):
-    """
-    функция для создания имен с окончанием .pdf
-    на входе список source с функиции nameClean
-    возвращает список с именами для файлов с расширением .pdf
-    """
-    fileNamesPdf = ['{0}.pdf'.format(i) for i in source]
-    return fileNamesPdf
-
-
-def renameFiles(sourceDir, pdfNameList):
-    """
-    функция которая переименовывает скан-копии в файлы 
-    с номером с программы заявка, фамилией и инициалами,
-    и с расширением pdf
-    на вход ей нужно:
-    1. sourceDir - адрес с файлами (переменная dirWithScanFiles)
-    2. pdfNameList - список с именами файлов с расширением pdf 
-            (результат функции namePdf)
-
-    задаем нулевой счетчик counter
-    """
-    counter = 0
-    # входим в папку со сканами
-    os.chdir(sourceDir)
-    for i in os.listdir():
-        # проходимся по папке со сканами, и по списку с именами
-        # по ходу присваивая их каждому файлу
-        os.rename(i, pdfNameList[counter])
-        # увеличиваем счетчик на 1 - переходя к следующей паре "файл/имя"
-        counter += 1
-
 
 def createIntermidiateDir(imd, dwsf, nCl):
     """
@@ -132,7 +35,7 @@ def createIntermidiateDir(imd, dwsf, nCl):
     3. переименовать их в нужную форму
     imd - папка для хранения уже переименованых папок с файлами
     (переменная intermidiateDir)
-    dwcf - папка со сканироваными файлами 
+    dwsf - папка со сканироваными файлами 
     так же нужен счетчик counter для прохождения по списку: 
     самих файлов dwcf переменная dirWithScanFiles, 
     имен папок список nCl (результат nameClean), 
@@ -147,13 +50,13 @@ def createIntermidiateDir(imd, dwsf, nCl):
         # создаем папки с нужными именами в промежуточной папке!
         os.mkdir(newDir)
         # тепер в только что созданную папку, нужно переместить файл
-        print('1:', "{0}\\{1}".format(dwsf, i))
-        print('2:', "{0}\\{1}".format(newDir, i))
         shutil.copy("{0}\\{1}".format(dwsf, i),
                     '{0}\\{1}'.format(newDir, i))
         # теперь перемещенный файл нужно переименовать в стандартную форму
         os.rename('{0}\\{1}'.format(newDir, i),
                   '{0}\\{1}'.format(newDir, akt))
+        logging.debug("в промежуточной папке создали \
+            {0}\\{1}".format(newDir, akt))
         # увеличиваем счетчик на 1 и переходим к следующим парам
         counter += 1
 
@@ -174,10 +77,12 @@ def replaceByRegion(imd, dD):
     lFiles = []
     lPass = []
     """
+    logging.debug('аргументы функции replaceByRegion промежуточная: {0}\
+     сетевая: {1}'.format(imd, dD))
     def checkRegion(iter1, iter2, str1, str2, name, folderD, folderS):
         """
-        iter1-имя папка объектa в промежуточной папки
-        iter2-имя папка района в сетевой папке
+        iter1-имя папки объектa в промежуточной папки
+        iter2-имя папки района в сетевой папке
         str1-код района нормальный
         str2-дибильный код района в сетевой папке
         name-глобальная переменная - конечное имя акта
@@ -187,6 +92,8 @@ def replaceByRegion(imd, dD):
         ее прототип дальше в коментах, как что и куда
         """
         # проверка региона
+        logging.debug('checkRegion: iter1: {0} iter2: {1}'.format(iter1, iter2))
+        
         if (iter1.startswith(str(str1))
                 and iter2.startswith(str(str2))):
             # переходим в нужную папку района и проходим по ней
@@ -199,8 +106,7 @@ def replaceByRegion(imd, dD):
                         folderD, iter2, iter1, name)):
                     # если да - сматываем удочки
 
-                    logging.info('{0}\\{1}\\{2}\\{3} - этот файл \
-                        уже существовал;'.format(folderD, iter2, iter1, name))
+                    logging.info('{0}\\{1}\\{2}\\{3} - этот файл уже существовал;'.format(folderD, iter2, iter1, name))
                     #lPass.append('{0}\\{1}\\{2}\\{3}'.format(
                     #    folderD, iter2, iter1, name))
                     pass
@@ -210,8 +116,7 @@ def replaceByRegion(imd, dD):
                                 format(folderS, iter1, name),
                                 '{0}\\{1}\\{2}\\{3}'.format(
                                     folderD, iter2, iter1, name))
-                    logging.info('папка - {0}\\{1}\\{2} существовала, \
-                        файл - {3} добавили;'.format(
+                    logging.info('папка - {0}\\{1}\\{2} существовала, файл - {3} добавили;'.format(
                         folderD, iter2, iter1, name))
                     #lFiles.append('{0}\\{1}\\{2}\\{3}'.format(
                     #    folderD, iter2, iter1, name))
@@ -227,16 +132,15 @@ def replaceByRegion(imd, dD):
                                     format(folderS, iter1, name),
                                     '{0}\\{1}\\{2}\\{3}'.format(
                                         folderD, iter2, k, name))
-                        logging.info('папка - {0}\\{1}\\{2} совпала по номеру \
-                            с программы заявка, файл - {3} добавили;'.format(
+                        logging.info('папка - {0}\\{1}\\{2} совпала по номеру с программы заявка, файл - {3} добавили;'.format(
                             folderD, iter2, k, name))
                         #lFiles.append('{0}\\{1}\\{2}\\{3}'.format(
                         #    folderD, iter2, k, name))
                         break
                 else:
                     # если нет - копируем в корневую папку все дерево
-                    shutil.copytree('{0}\\{1}'.format(folderS, iter1),
-                                    '{0}'.format(iter1))
+                    shutil.copytree('{0}\\{1}'.format(folderS, iter1), 
+                        '{0}'.format(iter1))
                     logging.info('создали каталок с файлом -{0}\\{1}\\{2}\
                         \\{3}'.format(folderD, iter2, iter1, name))
                     #lFolders.append('{0}\\{1}\\{2}\\{3}'.format(
@@ -250,6 +154,8 @@ def replaceByRegion(imd, dD):
         заходим в эту папку, и делаем проверку на наличе подходящей 
         папки объекта. Если есть - то копируем в нее только файл, 
         если нет - то копируем всю папку с файлом 
+        i-папка объекта в промежуточной папке
+        j-папка района в сетевой папке
         """
         for j in os.listdir(dD):
             if not j.endswith(' - Ярлык.lnk'):

@@ -1,0 +1,16 @@
+2019-01-12 22:58:26,886 - DEBUG - scriptForAll started
+2019-01-12 22:58:26,886 - DEBUG - getInfoFromTxtFile started
+2019-01-12 22:58:26,887 - DEBUG - getInfoFromTxtFile finished
+2019-01-12 22:58:26,888 - DEBUG - createIntermidiateDir started
+2019-01-12 22:58:48,759 - DEBUG - scriptForAll started
+2019-01-12 22:58:48,760 - DEBUG - getInfoFromTxtFile started
+2019-01-12 22:58:48,761 - DEBUG - getInfoFromTxtFile finished
+2019-01-12 22:58:48,762 - DEBUG - createIntermidiateDir started
+2019-01-12 22:58:48,764 - INFO - 1: scan\New Doc 2019-01-03 16.09.04.pdf
+2019-01-12 22:58:48,764 - INFO - 2: imd\25.00000 Сидоров С.С.\New Doc 2019-01-03 16.09.04.pdf
+2019-01-12 22:58:49,095 - INFO - 1: scan\New Doc 2019-01-03 16.09.58.pdf
+2019-01-12 22:58:49,096 - INFO - 2: imd\25.00001 Нігеров Н.Н.\New Doc 2019-01-03 16.09.58.pdf
+2019-01-12 22:58:49,147 - INFO - 1: scan\New Doc 2019-01-03 16.10.46.pdf
+2019-01-12 22:58:49,147 - INFO - 2: imd\25.00002 Пирожков П.П.\New Doc 2019-01-03 16.10.46.pdf
+2019-01-12 22:58:49,192 - DEBUG - createIntermidiateDir finished
+2019-01-12 22:58:49,192 - DEBUG - replaceByRegion started
