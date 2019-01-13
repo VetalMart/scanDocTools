@@ -8,7 +8,7 @@ logging.basicConfig(level=logging.DEBUG,
 	format='%(asctime)s - %(levelname)s - %(message)s',
 	filename='programInfo.txt', filemode='w')
 
-logging.info('scriptForAll started')
+logging.info('scriptForAll started\n\n')
 """	
 удаленный комп - то куда нужно забрасывать \\skv-fs02\kv\Проект\
 
@@ -25,20 +25,16 @@ imdFolder = 'c:\\users\\vitalii.martynenko\\scanDocTools\\imd'
 #получили список номеров и имен
 logging.info('getInfoFromTxtFile started')
 listWithInfo = getInfoFromTxtFile(txtFile)
-logging.info('getInfoFromTxtFile finished')
+logging.info('getInfoFromTxtFile finished\n')
 
 #создаем промежуточную папку с данными
 logging.info('createIntermidiateDir started')
 createIntermidiateDir(imdFolder, scanFolder, listWithInfo)
-logging.info('createIntermidiateDir finished')
-
-"""#раскладываем по полкам в удаленной папке
-logging.info('replaceByRegion started')
-replaceByRegion(imdFolder, remoteFolder)
-logging.info('replaceByRegion finished')
-"""
+logging.info('createIntermidiateDir finished\n')
 
 #раскладываем по полкам в удаленной папке
 logging.info('placeToHome started')
 placeToHome(imdFolder, remoteFolder)
-logging.info('placeToHome finished')
+logging.info('placeToHome finished\n')
+
+logging.info('scriptForAll finished')
