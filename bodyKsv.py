@@ -34,20 +34,24 @@ def createIntermidiateDir(imd, dwsf, gIFTF):
     """
     counter = 0
     for i in os.listdir(dwsf):
-        # адрес папки которая будет создана
-        newDir = '{0}\\{1}'.format(imd, gIFTF[counter].rstrip())
-        # создаем папки с нужными именами в промежуточной папке!
-        os.mkdir(newDir)
-        # тепер в только что созданную папку, нужно переместить файл
-        shutil.copy("{0}\\{1}".format(dwsf, i),
-                    '{0}\\{1}'.format(newDir, i))
-        # теперь перемещенный файл нужно переименовать в стандартную форму
-        os.rename('{0}\\{1}'.format(newDir, i),
-                  '{0}\\{1}'.format(newDir, akt))
-        logging.debug("""в промежуточной папке создали \
-            \r\t{0}\n\t\t\\{1}""".format(newDir, akt))
-        # увеличиваем счетчик на 1 и переходим к следующим парам
-        counter += 1
+        if not os.path.isdir('{0}\\{1}'.format(imd, gIFTF[counter].rstrip())):
+            # адрес папки которая будет создана
+            newDir = '{0}\\{1}'.format(imd, gIFTF[counter].rstrip())
+            # создаем папки с нужными именами в промежуточной папке!
+            os.mkdir(newDir)
+            # тепер в только что созданную папку, нужно переместить файл
+            shutil.copy("{0}\\{1}".format(dwsf, i),
+                        '{0}\\{1}'.format(newDir, i))
+            # теперь перемещенный файл нужно переименовать в стандартную форму
+            os.rename('{0}\\{1}'.format(newDir, i),
+                      '{0}\\{1}'.format(newDir, akt))
+            logging.debug("""в промежуточной папке создали {0}\\{1}""".format(newDir, akt))
+            # увеличиваем счетчик на 1 и переходим к следующим парам
+            counter += 1
+        else:
+            logging.info('в промежуточной папке, папка уже есть {0}\\{1}'.format(imd, gIFTF[counter].rstrip()))
+            counter += 1
+        
 
 def placeToHome(imd, dD):
     """
@@ -73,8 +77,7 @@ def placeToHome(imd, dD):
                             if os.path.isfile('{0}\\{1}\\{2}\\{3}'.format(
                                 dD, reg, objReg, akt)):
                                 #сматываем удочки
-                                logging.info('''Файл уже был: 
-                                    {0}\\{1}\\{2}\\{3}'''.format(
+                                logging.info('Файл уже был:{0}\\{1}\\{2}\\{3}'.format(
                                         dD, reg, objReg, akt))
                                 break
                             #если в папке нужного нам скана нет-копируем его
@@ -83,8 +86,7 @@ def placeToHome(imd, dD):
                                     imd, obj, akt), 
                                     '{0}\\{1}\\{2}\\{3}'.format(
                                         dD, reg, objReg, akt))
-                                logging.info('Создали файл: \
-                                    {0}\\{1}\\{2}\\{3}'.format(
+                                logging.info('Создали файл:{0}\\{1}\\{2}\\{3}'.format(
                                     dD, reg, objReg, akt))
                                 break
                     #если объекта нет по коду с программы заявка
@@ -92,8 +94,7 @@ def placeToHome(imd, dD):
                         #копируем весь каталог
                         shutil.copytree('{0}\\{1}'.format(imd, obj), 
                                     '{0}\\{1}\\{2}'.format(dD, reg, obj))
-                        logging.info('Скопировали папку с файлом: \
-                            {0}\\{1}\\{2}\\{3}'.format(
+                        logging.info('Скопировали папку с файлом:{0}\\{1}\\{2}\\{3}'.format(
                                     dD, reg, obj, akt))           
         else:
             #если такого района нет
