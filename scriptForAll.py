@@ -4,11 +4,12 @@ import logging
 
 from bodyKsv import *
 
-logging.basicConfig(level=logging.DEBUG, format='%(asctime)s - %(levelname)s - %(message)s')
-"""filename='programInfo.txt', filemode='w',"""
+logging.basicConfig(level=logging.DEBUG, 
+	format='%(asctime)s - %(levelname)s - %(message)s',
+	filename='programInfo.txt', filemode='w')
 
 logging.info('scriptForAll started')
-"""
+"""	
 удаленный комп - то куда нужно забрасывать \\skv-fs02\kv\Проект\
 
 """
@@ -31,7 +32,13 @@ logging.info('createIntermidiateDir started')
 createIntermidiateDir(imdFolder, scanFolder, listWithInfo)
 logging.info('createIntermidiateDir finished')
 
-#раскладываем по полкам в удаленной папке
+"""#раскладываем по полкам в удаленной папке
 logging.info('replaceByRegion started')
 replaceByRegion(imdFolder, remoteFolder)
 logging.info('replaceByRegion finished')
+"""
+
+#раскладываем по полкам в удаленной папке
+logging.info('placeToHome started')
+placeToHome(imdFolder, remoteFolder)
+logging.info('placeToHome finished')
