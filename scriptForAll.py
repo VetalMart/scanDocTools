@@ -14,8 +14,8 @@ logging.debug('current directory:{0}'.format(os.getcwd()))
 удаленный комп - то куда нужно забрасывать \\skv-fs02\kv\Проект\
 
 """
-#remoteFolder = '\\skv-fs02\kv\Проект\'
-remoteFolder = 'c:\\users\\vitalii.martynenko\\scanDocTools\\rem'
+remoteFolder = r'\\skv-fs02\kv\Проект'
+#remoteFolder = 'c:\\users\\vitalii.martynenko\\scanDocTools\\rem'
 txtFile = 'scan.txt'
 cwd = os.getcwd()
 
