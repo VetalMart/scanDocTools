@@ -19,7 +19,7 @@ def getInfoFromTxtFile(source):
     возвращает список с данными c чистыми имиенами
     """
     with open(source, 'r') as txtfile:
-        data = [' '.join(i.rstrip('\n').split(' ')[1:]) for i in txtfile]
+        data = [''' '''.join(i.rstrip('\n').split(' ')[1:]) for i in txtfile]
         return data
 
 def createIntermidiateDir(imd, dwsf, gIFTF):
@@ -40,17 +40,17 @@ def createIntermidiateDir(imd, dwsf, gIFTF):
     """
     counter = 0
     for i in os.listdir(dwsf):
-        if not os.path.isdir('{0}\\{1}'.format(imd, gIFTF[counter].rstrip())):
+        if not os.path.isdir('''{0}\\{1}'''.format(imd, gIFTF[counter].rstrip())):
             # адрес папки которая будет создана
-            newDir = '{0}\\{1}'.format(imd, gIFTF[counter].rstrip())
+            newDir = '''{0}\\{1}'''.format(imd, gIFTF[counter].rstrip())
             # создаем папки с нужными именами в промежуточной папке!
             os.mkdir(newDir)
             # тепер в только что созданную папку, нужно переместить файл
-            shutil.copy("{0}\\{1}".format(dwsf, i),
-                        '{0}\\{1}'.format(newDir, i))
+            shutil.copy("""{0}\\{1}""".format(dwsf, i),
+                        '''{0}\\{1}'''.format(newDir, i))
             # теперь перемещенный файл нужно переименовать в стандартную форму
-            os.rename('{0}\\{1}'.format(newDir, i),
-                      '{0}\\{1}'.format(newDir, akt))
+            os.rename('''{0}\\{1}'''.format(newDir, i),
+                      '''{0}\\{1}'''.format(newDir, akt))
             logging.debug("""в промежуточной папке создали {0}\\{1}""".format(newDir, akt))
             # увеличиваем счетчик на 1 и переходим к следующим парам
             counter += 1
