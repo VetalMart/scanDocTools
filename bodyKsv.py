@@ -1,19 +1,19 @@
+import logging
 import os
 import shutil
-import logging
 
-#стандратное имя файла
+# стандратное имя файла
 akt = 'акт прийняття внурішніх і зовнішніх мереж.pdf'
-#ключ-номер района с программы заявка, значение-номер района в сетевой папке
-regionDict = {'02.':'01_', '19.':'02_', '05.':'03_', '04.':'04_', 
-              '06.':'05_', '15.':'06_', '23.':'07_', 
-              '12.':'13_', '03.':'14_', '14.':'15_', '18.':'16_',
-              '25.':'17_', '11.':'18_', '16.':'19_', '09.':'20_',
-              '01.':'21_', '24.':'22_', '21.':'23_', '20.':'24_',
-              '08.':'25_', '22.':'26_'
-            }
+# ключ-номер района с программы заявка, значение-номер района в сетевой папке
+regionDict = {'02.': '01_', '19.': '02_', '05.': '03_', '04.': '04_',
+              '06.': '05_', '15.': '06_', '23.': '07_',
+              '12.': '13_', '03.': '14_', '14.': '15_', '18.': '16_',
+              '25.': '17_', '11.': '18_', '16.': '19_', '09.': '20_',
+              '01.': '21_', '24.': '22_', '21.': '23_', '20.': '24_',
+              '08.': '25_', '22.': '26_'}
 
-def getInfoFromTxtFile(source):
+
+def get_info_from_txt_file(source):
     """
     функция которая импортирует данные с txt файла
     возвращает список с данными c чистыми имиенами
@@ -22,7 +22,8 @@ def getInfoFromTxtFile(source):
         data = [''' '''.join(i.rstrip('\n').split(' ')[1:]) for i in txtfile]
         return data
 
-def createIntermidiateDir(imd, dwsf, gIFTF):
+
+def create_intermidiate_dir(imd, dwsf, giftf):
     """
     функция которая должна:
     1. создать папки
@@ -30,79 +31,84 @@ def createIntermidiateDir(imd, dwsf, gIFTF):
     3. переименовать их в нужную форму
     imd - папка для хранения уже переименованых папок с файлами
     (переменная intermidiateDir)
-    dwsf - папка со сканироваными файлами 
-    так же нужен счетчик counter для прохождения по списку: 
-    самих файлов dwcf переменная dirWithScanFiles, 
-    имен папок список gIFTF (результат getInfoFromTxtFile), 
+    dwsf - папка со сканироваными файлами
+    так же нужен счетчик counter для прохождения по списку:
+    самих файлов dwcf переменная dirWithScanFiles,
+    имен папок список giftf (результат get_info_from_txt_file),
 
-    что бы понять количество файлов, которые нужно разбросать по 
+    что бы понять количество файлов, которые нужно разбросать по
     папкам,-нужно находиться в папке со сканами dwsf-
     """
     counter = 0
     for i in os.listdir(dwsf):
-        if not os.path.isdir('''{0}\\{1}'''.format(imd, gIFTF[counter].rstrip())):
-            # адрес папки которая будет создана
-            newDir = '''{0}\\{1}'''.format(imd, gIFTF[counter].rstrip())
-            # создаем папки с нужными именами в промежуточной папке!
-            os.mkdir(newDir)
-            # тепер в только что созданную папку, нужно переместить файл
+        if not os.path.isdir('''{0}\\{1}'''.format(imd,
+                                                   giftf[counter].rstrip())):
+            #  адрес папки которая будет создана
+            new_dir = '''{0}\\{1}'''.format(imd, giftf[counter].rstrip())
+            #  создаем папки с нужными именами в промежуточной папке!
+            os.mkdir(new_dir)
+            #  тепер в только что созданную папку, нужно переместить файл
             shutil.copy("""{0}\\{1}""".format(dwsf, i),
-                        '''{0}\\{1}'''.format(newDir, i))
-            # теперь перемещенный файл нужно переименовать в стандартную форму
-            os.rename('''{0}\\{1}'''.format(newDir, i),
-                      '''{0}\\{1}'''.format(newDir, akt))
-            logging.debug("""в промежуточной папке создали {0}\\{1}""".format(newDir, akt))
-            # увеличиваем счетчик на 1 и переходим к следующим парам
+                        '''{0}\\{1}'''.format(new_dir, i))
+            #  теперь перемещенный файл нужно переименовать в стандартную форму
+            os.rename('''{0}\\{1}'''.format(new_dir, i),
+                      '''{0}\\{1}'''.format(new_dir, akt))
+            logging.debug("""в промежуточной папке создали {0}\\{1}""".format(
+                new_dir, akt))
+            #  увеличиваем счетчик на 1 и переходим к следующим парам
             counter += 1
         else:
-            logging.info('в промежуточной папке, папка уже есть {0}\\{1}'.format(imd, gIFTF[counter].rstrip()))
+            logging.info('в промежуточной папке, \
+                папка уже есть {0}\\{1}'.format(imd, giftf[counter].rstrip()))
             counter += 1
-        
 
-def placeToHome(imd, dD):
+
+def place_to_home(imd, dd):
     """
     imd-промежуточная папка, с папками абонентов и файлами внутри ее
-    dD-конечная сетевая папка, в которой осуществляется поиск папки района
+    dd-конечная сетевая папка, в которой осуществляется поиск папки района
     """
     for obj in os.listdir(imd):
-        #obj-папка объекта в промежуточной папке
+        # obj-папка объекта в промежуточной папке
         logging.debug('работаем с {0}'.format(obj))
-        #определяем район
+        # определяем район
         if obj[:3] in regionDict:
-            for reg in os.listdir(dD):
-                #выбираем район по значению ключа и что это папка
-                if os.path.isdir('{0}\\{1}'.format(dD,reg)) \
-                and reg.startswith(regionDict[obj[:3]]):
+            for reg in os.listdir(dd):
+                # выбираем район по значению ключа и что это папка
+                if os.path.isdir('{0}\\{1}'.format(dd, reg)) \
+                        and reg.startswith(regionDict[obj[:3]]):
                     logging.debug('выбрали район: {0}'.format(reg))
-                    #в папке района просматривем объекты
-                    listDir = os.listdir('{0}\\{1}'.format(dD,reg))
-                    for objReg in os.listdir('{0}\\{1}'.format(dD,reg)):
-                        #если объект находим по коду с программы заявка
+                    # в папке района просматривем объекты
+                    for objReg in os.listdir('{0}\\{1}'.format(dd, reg)):
+                        # если объект находим по коду с программы заявка
                         if obj[:9] == objReg[:9]:
-                            #если в этой папке нужный нам скан есть
+                            # если в этой папке нужный нам скан есть
                             if os.path.isfile('{0}\\{1}\\{2}\\{3}'.format(
-                                dD, reg, objReg, akt)):
-                                #сматываем удочки
-                                logging.info('Файл уже был:{0}\\{1}\\{2}\\{3}'.format(
-                                        dD, reg, objReg, akt))
+                                    dd, reg, objReg, akt)):
+                                # сматываем удочки
+                                logging.info('Файл уже \
+                                    был:{0}\\{1}\\{2}\\{3}'.format(
+                                    dd, reg, objReg, akt))
                                 break
-                            #если в папке нужного нам скана нет-копируем его
+                            # если в папке нужного нам скана нет-копируем его
                             else:
                                 shutil.copy('{0}\\{1}\\{2}'.format(
-                                    imd, obj, akt), 
+                                    imd, obj, akt),
                                     '{0}\\{1}\\{2}\\{3}'.format(
-                                        dD, reg, objReg, akt))
-                                logging.info('Создали файл:{0}\\{1}\\{2}\\{3}'.format(
-                                    dD, reg, objReg, akt))
+                                    dd, reg, objReg, akt))
+                                logging.info('Создали \
+                                    файл:{0}\\{1}\\{2}\\{3}'.format(
+                                    dd, reg, objReg, akt))
                                 break
-                    #если объекта нет по коду с программы заявка
+                    # если объекта нет по коду с программы заявка
                     else:
-                        #копируем весь каталог
-                        shutil.copytree('{0}\\{1}'.format(imd, obj), 
-                                    '{0}\\{1}\\{2}'.format(dD, reg, obj))
-                        logging.info('Скопировали папку с файлом:{0}\\{1}\\{2}\\{3}'.format(
-                                    dD, reg, obj, akt))           
+                        # копируем весь каталог
+                        shutil.copytree('{0}\\{1}'.format(imd, obj),
+                                        '{0}\\{1}\\{2}'.format(dd, reg, obj))
+                        logging.info('Скопировали папку \
+                            с файлом:{0}\\{1}\\{2}\\{3}'.format(
+                            dd, reg, obj, akt))
         else:
-            #если такого района нет
+            # если такого района нет
             logging.warning('ошибка с районом: {0}'.format(obj))
             pass
