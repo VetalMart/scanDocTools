@@ -1,3 +1,4 @@
+"""Docstring in public module."""
 import logging
 import os
 
