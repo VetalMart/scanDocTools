@@ -1,6 +1,10 @@
+"""Function for sorting script."""
 import logging
 import os
 import shutil
+
+# add base dir
+BASE_DIR = os.path.dirname(__file__)
 
 # стандратное имя файла
 akt = 'акт прийняття внурішніх і зовнішніх мереж.pdf'
@@ -15,8 +19,10 @@ regionDict = {'02.': '01_', '19.': '02_', '05.': '03_', '04.': '04_',
 
 def get_info_from_txt_file(source):
     """
-    функция которая импортирует данные с txt файла
+    функция которая импортирует данные с txt файла.
+
     возвращает список с данными c чистыми имиенами
+
     """
     with open(source, 'r') as txtfile:
         data = [''' '''.join(i.rstrip('\n').split(' ')[1:]) for i in txtfile]
@@ -25,7 +31,8 @@ def get_info_from_txt_file(source):
 
 def create_intermidiate_dir(imd, dwsf, giftf):
     """
-    функция которая должна:
+    функция которая должна.
+
     1. создать папки
     2. забросить туда файлы
     3. переименовать их в нужную форму
@@ -65,6 +72,8 @@ def create_intermidiate_dir(imd, dwsf, giftf):
 
 def place_to_home(imd, dd):
     """
+    Раскладывает по местам файлы и папки.
+
     imd-промежуточная папка, с папками абонентов и файлами внутри ее
     dd-конечная сетевая папка, в которой осуществляется поиск папки района
     """
