@@ -48,25 +48,30 @@ def create_intermidiate_dir(imd, dwsf, giftf):
     """
     counter = 0
     for i in os.listdir(dwsf):
-        if not os.path.isdir('''{0}\\{1}'''.format(imd,
-                                                   giftf[counter].rstrip())):
-            #  адрес папки которая будет создана
-            new_dir = '''{0}\\{1}'''.format(imd, giftf[counter].rstrip())
+
+        # новая папка в промежуточной папке
+        new_imd_dir = os.path.join(imd, giftf[counter].rstrip())
+        # файл скана в папке сканов
+        scan_file = os.path.join(dwsf, i)
+        # перемещенный скан
+        replaced_file = os.path.join(new_imd_dir, i)
+        # переименованый скан
+        renamed_file = os.path.join(new_imd_dir, akt)
+
+        if not os.path.isdir(new_imd_dir):
             #  создаем папки с нужными именами в промежуточной папке!
-            os.mkdir(new_dir)
+            os.mkdir(new_imd_dir)
             #  тепер в только что созданную папку, нужно переместить файл
-            shutil.copy("""{0}\\{1}""".format(dwsf, i),
-                        '''{0}\\{1}'''.format(new_dir, i))
+            shutil.copy(scan_file, replaced_file)
             #  теперь перемещенный файл нужно переименовать в стандартную форму
-            os.rename('''{0}\\{1}'''.format(new_dir, i),
-                      '''{0}\\{1}'''.format(new_dir, akt))
-            logging.debug("""в промежуточной папке создали {0}\\{1}""".format(
-                new_dir, akt))
+            os.rename(replaced_file, renamed_file)
+            logging.debug("""в промежуточной папке создали {0}""".format(
+                renamed_file))
             #  увеличиваем счетчик на 1 и переходим к следующим парам
             counter += 1
         else:
             logging.info('в промежуточной папке, \
-                папка уже есть {0}\\{1}'.format(imd, giftf[counter].rstrip()))
+                папка уже есть {0}'.format(new_imd_dir))
             counter += 1
 
 
@@ -83,40 +88,48 @@ def place_to_home(imd, dd):
         # определяем район
         if obj[:3] in regionDict:
             for reg in os.listdir(dd):
+
+                # папка района
+                reg_dir = os.path.join(dd, reg)
+
                 # выбираем район по значению ключа и что это папка
-                if os.path.isdir('{0}\\{1}'.format(dd, reg)) \
-                        and reg.startswith(regionDict[obj[:3]]):
+                if os.path.isdir(reg_dir) and reg.startswith(
+                        regionDict[obj[:3]]):
                     logging.debug('выбрали район: {0}'.format(reg))
                     # в папке района просматривем объекты
-                    for objReg in os.listdir('{0}\\{1}'.format(dd, reg)):
+                    for objReg in os.listdir(reg_dir):
+
+                        # имя файла в папке сетевай/район/абонент
+                        end_file_name = os.path.join(dd, reg, objReg, akt)
+                        # файл по адресу промежуточная/абонент/файл
+                        source_file = os.path.join(imd, obj, akt)
+                        # папка промежуточная/абонент
+                        obj_dir = os.path.join(imd, obj)
+                        # перемещенная папка абонента сетевая/район/абонент
+                        replaced_obj_dir = os.path.join(dd, reg, obj)
                         # если объект находим по коду с программы заявка
+
                         if obj[:9] == objReg[:9]:
                             # если в этой папке нужный нам скан есть
-                            if os.path.isfile('{0}\\{1}\\{2}\\{3}'.format(
-                                    dd, reg, objReg, akt)):
+                            if os.path.isfile(end_file_name):
                                 # сматываем удочки
-                                logging.info('Файл уже \
-                                    был:{0}\\{1}\\{2}\\{3}'.format(
-                                    dd, reg, objReg, akt))
+                                logging.info('Файл уже был:{0}'.format(
+                                    end_file_name))
                                 break
                             # если в папке нужного нам скана нет-копируем его
                             else:
-                                shutil.copy('{0}\\{1}\\{2}'.format(
-                                    imd, obj, akt),
-                                    '{0}\\{1}\\{2}\\{3}'.format(
-                                    dd, reg, objReg, akt))
-                                logging.info('Создали \
-                                    файл:{0}\\{1}\\{2}\\{3}'.format(
-                                    dd, reg, objReg, akt))
+                                shutil.copy(source_file, end_file_name)
+                                logging.info('Создали файл:{0}'.format(
+                                    end_file_name))
                                 break
+
                     # если объекта нет по коду с программы заявка
                     else:
                         # копируем весь каталог
-                        shutil.copytree('{0}\\{1}'.format(imd, obj),
-                                        '{0}\\{1}\\{2}'.format(dd, reg, obj))
+                        shutil.copytree(obj_dir, replaced_obj_dir)
                         logging.info('Скопировали папку \
-                            с файлом:{0}\\{1}\\{2}\\{3}'.format(
-                            dd, reg, obj, akt))
+                            с файлом:{0}'.format(os.path.join(
+                            replaced_obj_dir, akt)))
         else:
             # если такого района нет
             logging.warning('ошибка с районом: {0}'.format(obj))
