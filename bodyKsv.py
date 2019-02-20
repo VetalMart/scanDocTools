@@ -3,9 +3,6 @@ import logging
 import os
 import shutil
 
-# add base dir
-BASE_DIR = os.path.dirname(__file__)
-
 # стандратное имя файла
 akt = 'акт прийняття внурішніх і зовнішніх мереж.pdf'
 # ключ-номер района с программы заявка, значение-номер района в сетевой папке

@@ -23,6 +23,15 @@ else:
     os.mkdir(os.path.join(BASE_DIR, 'rem', '17_ксв'))
     remoteFolder = os.path.join(BASE_DIR, 'rem')
 
+if os.path.exists(remoteFolder):
+    REMOTE_DIR = remoteFolder
+elif os.path.isdir(os.path.join(BASE_DIR, 'rem')):
+    REMOTE_DIR = os.path.join(BASE_DIR, 'rem')
+else:
+    os.makedirs(os.path.join(BASE_DIR, 'rem', '17_ксв'))
+    REMOTE_DIR = os.path.join(BASE_DIR, 'rem')
+
+
 logging.basicConfig(
     level=logging.INFO,
     format='%(asctime)s - %(levelname)s - %(message)s',
@@ -54,7 +63,7 @@ if os.path.isfile(TXT_FILE) and os.path.isdir(SCAN_DIR):
 
     #  раскладываем по полкам в удаленной папке
     logging.debug('place_to_home started')
-    place_to_home(IMD_DIR, remoteFolder)
+    place_to_home(IMD_DIR, REMOTE_DIR)
     logging.info('наполнение сетевой папки закончили\n')
 
     logging.info('программа отработала. Пока!!!')
