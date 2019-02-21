@@ -14,23 +14,13 @@ IMD_DIR = os.path.join(BASE_DIR, 'imd')
 # name of txt file
 TXT_FILE = os.path.join(BASE_DIR, 'scan.txt')
 
-# удаленный комп - то куда нужно забрасывать \\skv-fs02\kv\Проект\
 if os.path.exists(r'\\skv-fs02\kv\Проект'):
-    remoteFolder = r'\\skv-fs02\kv\Проект'
-elif os.path.exists(BASE_DIR, 'rem'):
-    remoteFolder = os.path.join(BASE_DIR, 'rem')
+    REMOTE_DIR = r'\\skv-fs02\kv\Проект'
+elif os.path.exists(os.path.join(BASE_DIR, 'rem')):
+    REMOTE_DIR = os.path.join(BASE_DIR, 'rem')
 else:
     os.mkdir(os.path.join(BASE_DIR, 'rem', '17_ксв'))
-    remoteFolder = os.path.join(BASE_DIR, 'rem')
-
-if os.path.exists(remoteFolder):
-    REMOTE_DIR = remoteFolder
-elif os.path.isdir(os.path.join(BASE_DIR, 'rem')):
     REMOTE_DIR = os.path.join(BASE_DIR, 'rem')
-else:
-    os.makedirs(os.path.join(BASE_DIR, 'rem', '17_ксв'))
-    REMOTE_DIR = os.path.join(BASE_DIR, 'rem')
-
 
 logging.basicConfig(
     level=logging.INFO,
