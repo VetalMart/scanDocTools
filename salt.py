@@ -1,4 +1,5 @@
 import os
+import data
 
 def splitName(s):
     """функция для деланья из полных имен-фамилий с инициалами"""
@@ -92,7 +93,7 @@ def whats_in_folder(d, needs=0) -> dict:
 
     return temp_dict
 
-def dict_to_txt(d)->None:
+def dict_to_txt_file(d)->None:
     """Печатает в текстовый файл словарь
     
     - печатает с кодировкой cp1251 для windows;
@@ -105,3 +106,27 @@ def dict_to_txt(d)->None:
     with open('{0}.txt'.format(name), 'w', encoding='cp1251') as f:
         for k, v in d.items():
             f.write('{0}\t{1}\n'.format(k, v))
+
+def list_to_txt_file(l)->None:
+    """Печатает в текстовый файл список
+    
+    - печатает с кодировкой cp1251 для windows;
+    - нужно будет ввести имя файла.
+    - в файле информация идет так: "Ключ" {табуляция} "значение" - для 
+        удобства вставки в ексель;
+
+    l - список который нужно завернуть в файл"""
+    name = input("Enter file name(no extention)> ")
+    with open('{0}.txt'.format(name), 'w', encoding='cp1251') as f:
+        for k in l:
+            f.write('{0}\n'.format(k))
+
+def make_list_from_excel_str(s)->list:
+    """Делает список из копии текста с екселя"""
+    tmp_str = s.split('\n')
+    if tmp_str[-1] == '':
+        tmp_str.pop(-1)
+    return tmp_str
+
+if __name__ == "__main__":
+    pass
