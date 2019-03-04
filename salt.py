@@ -159,17 +159,17 @@ def temp_remover(s, code)->list:
             vas.remove(i)
     return vas
 
-def list_from_excel_file()->list:
+def list_from_excel_file(num, left_up_bound, right_down_bound)->list:
     """Возвращает список значений из выбраного файла нужного диапазона.
     """
     wb = load_workbook(fileopenbox())   #choose file
-    for i in enumerate(wb.sheetnames):  #check worksheets
-        print(i)
-    num = int(input("Type number of sheets you want.> "))
+    #for i in enumerate(wb.sheetnames):  #check worksheets
+     #   print(i)
+    #num = int(input("Type number of sheets you want.> "))
     ws = wb[wb.sheetnames[num]]         #choose require worksheets
     #choose bounds
-    left_up_bound = str(input("Type left-up cell bound> "))
-    right_down_bound = str(input("Type right down cell bound> "))
+    #left_up_bound = str(input("Type left-up cell bound> "))
+    #right_down_bound = str(input("Type right down cell bound> "))
     cell_range = ws[left_up_bound:right_down_bound]
     cell_grid = []
     #go through rows
@@ -182,16 +182,33 @@ def list_from_excel_file()->list:
     return cell_grid
     
 if __name__ == "__main__":
-    vas, fas, vas_fas, pysanko = [], [], [], []
-    tmp_list = [vas, fas, vas_fas, pysanko]
-    vas = list_from_excel_file()
-    #for i in tmp_list:
-       # i = list_from_excel_file()
+    #vas, fas, vas_fas, pysanko = [], [], [], []
+    #vas = list_from_excel_file(2, 'A2', 'H343')
+    #fas = list_from_excel_file(3, 'A2', 'H140')
+    #vas_fas = list_from_excel_file(1, 'A2', 'H378')
+    ksv = list_from_excel_file(1, 'A3', 'H279')
+    pysanko = list_from_excel_file(0, 'E5', 'H2007')
+    #tmp_list = [vas, fas, vas_fas, pysanko]
 
-    for i in vas:
-        print(i)
+    #total = []
+    #for i in tmp_list[:3]:
+     #   total.extend(i)
     
-        """
+    match = []
+    for i in ksv:#total:
+        for j in pysanko:
+            if i[3] == None:
+                print('!!!!!!!!!!!!')
+                print(i)
+                print('!!!!!!!!!!!!')
+            elif (i[0] in j[1] and
+                    i[3].split(' ')[0] in j[0] and
+                    i[7] == j[3]):
+                print(j)
+                #match.append(j)
+    """
+    list_to_txt_file(match)
+    
     vas = temp_remover(data.vas, '06$')
     fas = temp_remover(data.fas, '23$')
     vas_fas = [i.strip().split(' ') for i in data.vas_fas.splitlines()]
