@@ -1,5 +1,11 @@
 import os
+
+from openpyxl import load_workbook
+from easygui import fileopenbox
+
 import data
+
+
 
 def splitName(s):
     """функция для деланья из полных имен-фамилий с инициалами"""
@@ -128,5 +134,82 @@ def make_list_from_excel_str(s)->list:
         tmp_str.pop(-1)
     return tmp_str
 
+def whitespace_remover(s):
+    """Delete whitespace if it repeate > 2 times, or after \n"""
+    tmp_s = ''
+    c = 0
+    for i in s:
+        if not i.isspace():
+            tmp_s += i
+            c = 0
+        elif i.isspace():
+            if c == 0:
+                tmp_s += i
+                c = 1
+            else:
+                pass
+
+    return tmp_s.lower()
+
+def temp_remover(s, code)->list:
+    vas_tmp = whitespace_remover(s).replace('\n', '').split(code)
+    vas = [i.strip().split(' ') for i in vas_tmp]
+    for i in vas:
+        if i == ['']:
+            vas.remove(i)
+    return vas
+
+def list_from_excel_file()->list:
+    """Возвращает список значений из выбраного файла нужного диапазона.
+    """
+    wb = load_workbook(fileopenbox())   #choose file
+    for i in enumerate(wb.sheetnames):  #check worksheets
+        print(i)
+    num = int(input("Type number of sheets you want.> "))
+    ws = wb[wb.sheetnames[num]]         #choose require worksheets
+    #choose bounds
+    left_up_bound = str(input("Type left-up cell bound> "))
+    right_down_bound = str(input("Type right down cell bound> "))
+    cell_range = ws[left_up_bound:right_down_bound]
+    cell_grid = []
+    #go through rows
+    for row in cell_range:
+        tmp = []
+        for cell in row:
+            tmp.append(cell.value)
+        cell_grid.append(tmp)
+
+    return cell_grid
+    
 if __name__ == "__main__":
-    pass
+    vas, fas, vas_fas, pysanko = [], [], [], []
+    tmp_list = [vas, fas, vas_fas, pysanko]
+    vas = list_from_excel_file()
+    #for i in tmp_list:
+       # i = list_from_excel_file()
+
+    for i in vas:
+        print(i)
+    
+        """
+    vas = temp_remover(data.vas, '06$')
+    fas = temp_remover(data.fas, '23$')
+    vas_fas = [i.strip().split(' ') for i in data.vas_fas.splitlines()]
+    l = [vas, fas, vas_fas]
+    total = []
+    for i in l:
+        total.extend(i)     #my dog
+
+    req_list = []
+    numb_dog = []
+    for i in total:
+        for j in data.pysanko.lower().split('\n'):
+            if (#i[0] in j and 
+                i[1] in j):# and 
+                #i[-1] in j):
+                req_list.append(j)
+                numb_dog.append(i)
+                #print(i[0], i[1])
+                print(j)
+    #list_to_txt_file(req)
+    """
